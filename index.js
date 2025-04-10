@@ -1,5 +1,16 @@
 require('dotenv').config(); 
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 3000;
 
+// Start a fake HTTP server to keep Render happy
+app.get('/', (req, res) => {
+  res.send('KingsChat bot is running.');
+});
+
+app.listen(port, () => {
+  console.log(`[HTTP] Web server running on port ${port}`);
+});
 
 const { Builder, By, until, Key } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
