@@ -8,35 +8,20 @@ const os = require('os');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 
-// const tempUserDir = path.join(os.tmpdir(), uuidv4());
+const tempUserDir = path.join(os.tmpdir(), uuidv4());
 
-// let options = new chrome.Options();
-// options.addArguments(
-//     `--user-data-dir=${tempUserDir}`,
-//     '--no-sandbox',
-//     '--disable-dev-shm-usage',
-//     '--headless',
-//     '--disable-gpu'
-//   );
-  
+let options = new chrome.Options();
+options.addArguments(
+  `--user-data-dir=${tempUserDir}`,
+  '--no-sandbox',
+  '--disable-dev-shm-usage',
+  '--headless',
+  '--disable-gpu'
+);
 
-// let driver = new Builder().forBrowser('chrome').setChromeOptions(options).build();
 
-function getChromeDriver() {
-    const tempUserDir = path.join(os.tmpdir(), uuidv4()); // regenerate each time
-  
-    let options = new chrome.Options();
-    options.addArguments(
-      `--user-data-dir=${tempUserDir}`,
-      '--no-sandbox',
-      '--disable-dev-shm-usage',
-      '--headless',
-      '--disable-gpu'
-    );
-  
-    return new Builder().forBrowser('chrome').setChromeOptions(options).build();
-  }
-  
+let driver = new Builder().forBrowser('chrome').setChromeOptions(options).build();
+
 
 let searchQueries = []; // Global array to store search queries
 
@@ -524,9 +509,8 @@ async function restartBrowserAndLogin() {
 
     await driver.quit(); // Close the existing browser
 
+    driver = new Builder().forBrowser('chrome').setChromeOptions(options).build(); // Reinitialize the browser
     // driver = new Builder().forBrowser('chrome').build(); // Reinitialize the browser
-
-    driver = getChromeDriver();
 
     console.log("[DEBUG] Browser restarted. Logging in...");
 
