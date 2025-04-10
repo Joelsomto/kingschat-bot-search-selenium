@@ -6,14 +6,15 @@ const chrome = require('selenium-webdriver/chrome');
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
 
-const tempProfileDir = fs.mkdtempSync(path.join(os.tmpdir(), 'chrome-profile-'));
+const tempProfileDir = path.join(os.tmpdir(), `chrome-profile-${uuidv4()}`);
 
 const options = new chrome.Options();
 options.addArguments(`--user-data-dir=${tempProfileDir}`);
 
-let driver = new Builder().forBrowser('chrome').build(); // I
-// nitialize the driver globally
+
+let driver = new Builder().forBrowser('chrome').setChromeOptions(options).build();
 
 
 let searchQueries = []; // Global array to store search queries
