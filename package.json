@@ -2,10 +2,12 @@
   "name": "kingschat-bot",
   "version": "1.0.0",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "postinstall": "npx selenium-standalone install"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
+    "node-fetch": "^2.7.0",
     "puppeteer": "^24.6.1",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",

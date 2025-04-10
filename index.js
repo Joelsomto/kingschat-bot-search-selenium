@@ -2,9 +2,18 @@ require('dotenv').config();
 
 
 const { Builder, By, until, Key } = require('selenium-webdriver');
+const chrome = require('selenium-webdriver/chrome');
+const path = require('path');
+const os = require('os');
+const fs = require('fs');
 
+const tempProfileDir = fs.mkdtempSync(path.join(os.tmpdir(), 'chrome-profile-'));
 
-let driver = new Builder().forBrowser('chrome').build(); // Initialize the driver globally
+const options = new chrome.Options();
+options.addArguments(`--user-data-dir=${tempProfileDir}`);
+
+let driver = new Builder().forBrowser('chrome').build(); // I
+// nitialize the driver globally
 
 
 let searchQueries = []; // Global array to store search queries
