@@ -8,11 +8,14 @@ const os = require('os');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 
-const tempProfileDir = path.join(os.tmpdir(), `chrome-profile-${uuidv4()}`);
+const tempUserDir = path.join(os.tmpdir(), uuidv4());
 
-const options = new chrome.Options();
-options.addArguments(`--user-data-dir=${tempProfileDir}`);
-
+let options = new chrome.Options();
+options.addArguments(
+  `--user-data-dir=${tempUserDir}`,
+  '--no-sandbox',
+  '--disable-dev-shm-usage'
+);
 
 let driver = new Builder().forBrowser('chrome').setChromeOptions(options).build();
 
