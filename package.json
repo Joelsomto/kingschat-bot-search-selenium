@@ -10,7 +10,8 @@
     "puppeteer": "^24.6.1",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
-    "selenium-webdriver": "^4.31.0"
+    "selenium-webdriver": "^4.31.0",
+    "uuid": "^11.1.0"
   },
   "engines": {
     "node": "18.x"
