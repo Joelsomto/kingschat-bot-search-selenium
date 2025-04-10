@@ -12,10 +12,13 @@ const tempUserDir = path.join(os.tmpdir(), uuidv4());
 
 let options = new chrome.Options();
 options.addArguments(
-  `--user-data-dir=${tempUserDir}`,
-  '--no-sandbox',
-  '--disable-dev-shm-usage'
-);
+    `--user-data-dir=${tempUserDir}`,
+    '--no-sandbox',
+    '--disable-dev-shm-usage',
+    '--headless',
+    '--disable-gpu'
+  );
+  
 
 let driver = new Builder().forBrowser('chrome').setChromeOptions(options).build();
 
