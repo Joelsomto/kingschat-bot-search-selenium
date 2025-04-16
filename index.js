@@ -116,53 +116,130 @@ async function fetchSearchResults() {
 
 // Define the update function
 
-async function updateAutomate(id, data) {
+// async function updateAutomate(id, data) {
 
-    const url = `https://kingslist.pro/app/default/api/automate.php?id=${id}`; // Replace with your full API URL
+//     const url = `https://kingslist.pro/app/default/api/automate.php?id=${id}`; // Replace with your full API URL
+
+//     const options = {
+
+//         method: 'PUT', // or 'PATCH'
+
+//         headers: {
+
+//             'Content-Type': 'application/json',
+
+//             'Accept': 'application/json',
+
+//         },
+
+//         body: JSON.stringify(data), // Convert the data to JSON
+
+//     };
+
+
+//     try {
+
+//         const response = await fetch(url, options);
+
+
+//         if (!response.ok) {
+
+//             throw new Error(`HTTP error! Status: ${response.status}`);
+
+//         }
+
+
+//         const result = await response.json();
+
+//         console.log('Update successful:', result);
+
+//         return result;
+
+//     } catch (error) {
+
+//         console.error('Error updating record:', error);
+
+//     }
+
+// }
+
+async function updateAutomate(id, data) {
+    const url = `https://kingslist.pro/app/default/api/automate.php?id=${id}`;
+    
+    // Enhanced debug logging
+    console.log('🔍 Starting updateAutomate with:', {
+        url,
+        data,
+        stringifiedData: JSON.stringify(data)
+    });
 
     const options = {
-
-        method: 'PUT', // or 'PATCH'
-
+        method: 'PUT',
         headers: {
-
             'Content-Type': 'application/json',
-
             'Accept': 'application/json',
-
         },
-
-        body: JSON.stringify(data), // Convert the data to JSON
-
+        body: JSON.stringify(data),
     };
 
-
     try {
-
+        console.log('🔄 Attempting API request...');
         const response = await fetch(url, options);
-
+        
+        console.log('📄 Raw response:', {
+            status: response.status,
+            statusText: response.statusText,
+            headers: Object.fromEntries(response.headers.entries()),
+        });
 
         if (!response.ok) {
-
-            throw new Error(`HTTP error! Status: ${response.status}`);
-
+            let errorBody;
+            try {
+                errorBody = await response.text();
+                console.error('❌ API Error Response Body:', errorBody);
+                errorBody = JSON.parse(errorBody);
+            } catch (e) {
+                console.error('⚠️ Could not parse error response:', e);
+            }
+            
+            throw new Error(
+                `HTTP ${response.status} - ${response.statusText}\n` +
+                `Details: ${errorBody?.message || 'No error details provided'}`
+            );
         }
 
-
         const result = await response.json();
-
-        console.log('Update successful:', result);
-
+        console.log('✅ Update successful:', result);
         return result;
 
     } catch (error) {
-
-        console.error('Error updating record:', error);
-
+        console.error('🚨 Full update error:', {
+            errorName: error.name,
+            errorMessage: error.message,
+            errorStack: error.stack,
+            requestDetails: {
+                url,
+                method: 'PUT',
+                payload: data
+            }
+        });
+        
+        // Additional diagnostic request
+        try {
+            console.log('🔧 Running diagnostic GET request...');
+            const diagnosticResponse = await fetch(url);
+            console.log('🩺 Diagnostic check:', {
+                status: diagnosticResponse.status,
+                exists: diagnosticResponse.ok,
+                currentData: await diagnosticResponse.json().catch(() => 'Could not parse')
+            });
+        } catch (diagError) {
+            console.error('⚠️ Diagnostic failed:', diagError);
+        }
+        
+        throw error; // Re-throw after logging
     }
-
 }
-
 
 // Get access token and update the database
 
@@ -227,6 +304,7 @@ async function getAccessToken() {
 
             // Call the update function
 
+            
             await updateAutomate(automateId, updateData);
 
 
