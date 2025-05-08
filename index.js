@@ -709,3 +709,18 @@ async function restartBrowserAndLogin() {
     }
 
 })();
+
+// Run token fetching every 30 minutes (1800000 milliseconds)
+setInterval(async () => {
+    console.log('[SCHEDULED TASK] Running getAccessToken at', new Date().toLocaleString());
+  
+    const result = await loginToKingsChat();
+  
+    if (result.success) {
+      console.log('[SUCCESS] Token refreshed:', result.accessToken);
+    } else {
+      console.log('[FAILURE] Could not refresh token.');
+    }
+  
+  }, 30 * 60 * 1000); // 30 minutes
+  
