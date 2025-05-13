@@ -710,17 +710,41 @@ async function restartBrowserAndLogin() {
 
 })();
 
-// Run token fetching every 30 minutes (1800000 milliseconds)
-setInterval(async () => {
-    console.log('[SCHEDULED TASK] Running getAccessToken at', new Date().toLocaleString());
-  
-    const result = await loginToKingsChat();
-  
-    if (result.success) {
-      console.log('[SUCCESS] Token refreshed:', result.accessToken);
-    } else {
-      console.log('[FAILURE] Could not refresh token.');
+
+
+async function runBot() {
+    while (true) {
+        try {
+            const { searchQuery, searchIds } = await fetchSearchResults();
+
+            if (searchQuery.length > 0) {
+                const loginResult = await loginToKingsChat();
+                if (loginResult.success) {
+                    const searchResults = await extractSearchResultsFromWindow();
+                    await updateSearchResults(searchIds[0], searchResults); // Adjust to match ID structure
+                }
+            }
+        } catch (err) {
+            console.error("🛑 Bot Error:", err);
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 30000)); // Wait 30 seconds before next cycle
     }
+}
+
+runBot(); // Start the bot
+
+// Run token fetching every 30 minutes (1800000 milliseconds)
+// setInterval(async () => {
+//     console.log('[SCHEDULED TASK] Running getAccessToken at', new Date().toLocaleString());
   
-  }, 30 * 60 * 1000); // 30 minutes
+//     const result = await loginToKingsChat();
+  
+//     if (result.success) {
+//       console.log('[SUCCESS] Token refreshed:', result.accessToken);
+//     } else {
+//       console.log('[FAILURE] Could not refresh token.');
+//     }
+  
+//   }, 30 * 60 * 1000); // 30 minutes
   
